@@ -1,16 +1,21 @@
+import { Item } from "./Item";
 
-export class GildedRose {
-    items: Array<Item>;
+export class Shop {
 
-    constructor(items = [] as Array<Item>) {
-        this.items = items;
+    items: Item[];
+
+    constructor(items: Item[]) {
+      this.items = items;
+    }
+
+    getItems() {
+       return this.items;
     }
 
     update() : void {
-        this.items.forEach(function(item){
-            item.updateSellIn();
-            item.updateQuality();
-        }
-        )
+    this.items.forEach(function(item){
+        item.update();
+    }
+    )
     }
 }
