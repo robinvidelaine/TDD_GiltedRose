@@ -1,5 +1,5 @@
 import { Shop } from "../app/Shop";
-import { Item } from "../app/Item";
+import { Item,DefaultItem, AgedBrieItem, BackstagePassesItem, Conjured } from "../app/Item";
 import { LegendaryItem } from "../app/LegendaryItem";
 var assert = require('assert');
 
@@ -8,9 +8,26 @@ describe('Gilded-Rose-4', () =>{
 
     let shops: Shop;
 
+
+    
+
+
     beforeEach(() =>{
-        let items:Item[] = [new Item(1,1), new Item(0,2), new Item(0,0), new Item(0,0,"Aged Brie"), new Item(0,80), new LegendaryItem(undefined,80,"Sulfuras"), new Item(11,0,"Backstage passes"), new Item(10,0,"Backstage passes"), new Item(5,0,"Backstage passes"), new Item(0,5,"Backstage passes"), new Item(2,5,"Conjured")];
-        
+        // let items:Item[] = [new Item(1,1), new Item(0,2), new Item(0,0), new Item(0,0,"Aged Brie"), new Item(0,80), new LegendaryItem(undefined,80,"Sulfuras"), new Item(11,0,"Backstage passes"), new Item(10,0,"Backstage passes"), new Item(5,0,"Backstage passes"), new Item(0,5,"Backstage passes"), new Item(2,5,"Conjured")];
+        let items: Item[] = [
+            new DefaultItem(1, 1),
+            new DefaultItem(0, 2),
+            new DefaultItem(0, 0),
+            new AgedBrieItem(0, 0),
+            new DefaultItem(0, 80),
+            new LegendaryItem(undefined, 80, "Sulfuras"),
+            new BackstagePassesItem(11, 0),
+            new BackstagePassesItem(10, 0),
+            new BackstagePassesItem(5, 0),
+            new BackstagePassesItem(0, 5),
+            new Conjured(2, 5)
+          ];
+          
         shops = new Shop(items);
         shops.update();
     });

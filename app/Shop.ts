@@ -1,4 +1,4 @@
-import { Item } from "./Item";
+import { Item,DefaultItem, AgedBrieItem, BackstagePassesItem, Conjured } from "./Item";
 
 export class Shop {
 
