@@ -1,20 +1,20 @@
 // Classe abstraite Item qui représente un article
 // La méthode update est à implémenter dans les classes filles
 // pour mettre à jour les propriétés sellin et quality
- export abstract class Item {
+export abstract class Item {
     // La quantité restante de jours avant que l'élément ne soit vendu
     sellin: number;
     // La qualité de l'élément, qui détermine sa valeur
     quality: number;
     // Le nom de l'élément
     name: string;
-    
+
     // Constructeur qui initialise les propriétés
     constructor(sellin, quality, name = "") {
-                this.sellin = sellin;
-                this.quality = quality;
-                this.name = name;
-            }
+        this.sellin = sellin;
+        this.quality = quality;
+        this.name = name;
+    }
 
     // Méthode abstraite à implémenter dans les classes filles
     abstract update(): void;
