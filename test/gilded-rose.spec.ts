@@ -163,3 +163,89 @@ describe('DefaultItem', () => {
     expect(item.quality).toBe(50);
   });
 });
+
+
+
+describe("getProductValue", () => {
+    // Initialiser une instance de Shop avant chaque test
+    let shop: Shop;
+    beforeEach(() => {
+      // Créer un tableau d'objets représentant des articles fictifs
+      const items = [
+        { name: "item1", quality: 10, sellIn: 5 },
+        { name: "item2", quality: 20, sellIn: 10 },
+        { name: "item3", quality: 30, sellIn: 15 },
+      ];
+      // Convertir le tableau d'articles en chaîne de caractères JSON
+      const itemsJson = JSON.stringify(items);
+      // Créer un fichier JSON avec la chaîne de caractères JSON
+      fs.writeFileSync("items.json", itemsJson);
+      // Créer une instance de ItemsRepository avec le fichier JSON
+      const itemsRepository = new ItemsRepository("items.json");
+      // Créer une instance de Shop en utilisant l'instance de ItemsRepository
+      shop = new Shop(itemsRepository);
+    });
+  
+    // Tester si la méthode getProductValue retourne la valeur de l'article demandé
+    it("should return the value of the requested product", () => {
+      // Obtenir la valeur de l'article avec le nom "item2"
+      const value = shop.getProductValue("item2");
+      // Vérifier si la valeur retournée est égale à 20
+      expect(value).toEqual(20);
+    });
+  
+    // Tester si la méthode getProductValue retourne 0 si l'article n'existe pas
+    it("should return 0 if the product does not exist", () => {
+      // Obtenir la valeur de l'article avec le nom "item4"
+      const value = shop.getProductValue("item4");
+    // Vérifier si la valeur retournée est égale à 0
+    expect(value).toEqual(0);
+  });
+});
+
+// Classe de test pour la méthode sellProduct de la classe Shop
+describe("sellProduct", () => {
+  // Initialiser une instance de Shop avant chaque test
+  let shop: Shop;
+  beforeEach(() => {
+    // Créer un tableau d'objets représentant des articles fictifs
+    const items = [
+        { name: "item1", quality: 10, sellin: 5 },
+        { name: "item2", quality: 20, sellin: 10 },
+        { name: "item3", quality: 30, sellin: 15 },
+    ];
+    // Convertir le tableau d'articles en chaîne de caractères JSON
+    const itemsJson = JSON.stringify(items);
+    // Créer un fichier JSON avec la chaîne de caractères JSON
+    fs.writeFileSync("items.json", itemsJson);
+    // Créer une instance de ItemsRepository avec le fichier JSON
+    const itemsRepository = new ItemsRepository("items.json");
+    // Créer une instance de Shop en utilisant l'instance de ItemsRepository
+    shop = new Shop(itemsRepository);
+  });
+
+  // Tester si la méthode sellProduct met à jour l'inventaire en enlevant l'article vendu
+  it("should update the inventory by removing the sold product", () => {
+    // Vendre l'article avec le nom "item2"
+    shop.sellProduct("item2");
+    // Obtenir l'inventaire mis à jour
+    const items = shop.getInventory();
+    // Vérifier si l'article avec le nom "item2" n'est plus dans l'inventaire
+    expect(items.find((item) => item.name === "item2")).toBeUndefined();
+  });
+
+  // Tester si la méthode sellProduct ne fait rien si l'article à vendre n'existe pas
+  it("should do nothing if the product to sell does not exist", () => {
+    // Vendre l'article avec le nom "item4"
+    shop.sellProduct("item4");
+    // Obtenir l'inventaire mis à jour
+    const items = shop.getInventory();
+    // Vérifier si l'inventaire n'a pas changé
+    expect(items).toEqual([
+        { name: "item1", quality: 10, sellin: 5 },
+        { name: "item2", quality: 20, sellin: 10 },
+        { name: "item3", quality: 30, sellin: 15 },
+    ]);
+  });
+});
+

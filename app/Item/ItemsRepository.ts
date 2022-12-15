@@ -9,6 +9,8 @@ import * as fs from "fs";
 export interface Persistence {
   saveInventory(items: Item[]): void;
   getInventory(): Item[];
+  getProductValue(name: string): number;
+  sellProduct(name: string): void;
 }
 
 export class ItemsRepository {
