@@ -1,4 +1,4 @@
-import { Shop } from "../app/Shop";
+import { Shop } from "../app/Shop/Shop";
 import { Item } from "../app/Item/Item";
 import { AgedBrieItem } from "../app/Item/AgedBrieItem";
 import { BackstagePassesItem } from "../app/Item/BackstagePassesItem";
@@ -12,11 +12,12 @@ import { assert } from "chai";
 describe("Shop", () => {
   let shop: Shop;
   const filePath = "items.json";
+  let itemsRepository: ItemsRepository;
 
   beforeEach(() => {
     // create a new Shop object and load the items from the JSON file
     const repository = new ItemsRepository(filePath);
-    shop = new Shop(repository);
+    itemsRepository= new ItemsRepository(filePath);
   });
 
   afterEach(() => {
@@ -27,12 +28,12 @@ describe("Shop", () => {
   it("should save the inventory to a JSON file", () => {
     // create some items
     const items = [
-      new DefaultItem(1, 1),
-      new DefaultItem(0, 2),
+      new DefaultItem(1, 1, 0),
+      new DefaultItem(0, 2, 0),
     ];
 
     // save the items to the JSON file
-    shop.saveInventory(items);
+    itemsRepository.saveInventory(items);
 
     // read the JSON file and verify that it contains the expected data
     const data = fs.readFileSync(filePath).toString();
@@ -41,11 +42,13 @@ describe("Shop", () => {
         "name": "",
         "quality": 1,
         "sellin": 1,
+        "value": 0,
       },
       {
         "name": "",
         "quality": 2,
         "sellin": 0,
+        "value": 0,
       },
     ]);
   });
@@ -57,7 +60,7 @@ describe('AgedBrieItem', () => {
   let item;
 
   beforeEach(() => {
-    item = new AgedBrieItem(10, 20);
+    item = new AgedBrieItem(10, 20,0);
   });
 
   test('should update sellin value', () => {
@@ -83,8 +86,8 @@ describe('AgedBrieItem', () => {
     let item2;
   
     beforeEach(() => {
-      item = new BackstagePassesItem(10, 20);
-      item2 = new BackstagePassesItem(11, 20);
+      item = new BackstagePassesItem(10, 20, 0);
+      item2 = new BackstagePassesItem(11, 20, 0);
     });
   
     test('should update sellin value', () => {
@@ -120,7 +123,7 @@ describe('AgedBrieItem', () => {
     let item;
   
     beforeEach(() => {
-      item = new LegendaryItem(undefined, 80, "Sulfuras");
+      item = new LegendaryItem(undefined, 80, 0, "Sulfuras");
     });
   
     test('should not update sellin value', () => {
@@ -138,7 +141,7 @@ describe('DefaultItem', () => {
   let item;
 
   beforeEach(() => {
-    item = new DefaultItem(10, 20);
+    item = new DefaultItem(10, 20,0);
   });
 
   test('should update sellin value', () => {
@@ -161,90 +164,5 @@ describe('DefaultItem', () => {
     item.quality = 80;
     item.update();
     expect(item.quality).toBe(50);
-  });
-});
-
-
-
-describe("getProductValue", () => {
-    // Initialiser une instance de Shop avant chaque test
-    let shop: Shop;
-    beforeEach(() => {
-      // Créer un tableau d'objets représentant des articles fictifs
-      const items = [
-        { name: "item1", quality: 10, sellIn: 5 },
-        { name: "item2", quality: 20, sellIn: 10 },
-        { name: "item3", quality: 30, sellIn: 15 },
-      ];
-      // Convertir le tableau d'articles en chaîne de caractères JSON
-      const itemsJson = JSON.stringify(items);
-      // Créer un fichier JSON avec la chaîne de caractères JSON
-      fs.writeFileSync("items.json", itemsJson);
-      // Créer une instance de ItemsRepository avec le fichier JSON
-      const itemsRepository = new ItemsRepository("items.json");
-      // Créer une instance de Shop en utilisant l'instance de ItemsRepository
-      shop = new Shop(itemsRepository);
-    });
-  
-    // Tester si la méthode getProductValue retourne la valeur de l'article demandé
-    it("should return the value of the requested product", () => {
-      // Obtenir la valeur de l'article avec le nom "item2"
-      const value = shop.getProductValue("item2");
-      // Vérifier si la valeur retournée est égale à 20
-      expect(value).toEqual(20);
-    });
-  
-    // Tester si la méthode getProductValue retourne 0 si l'article n'existe pas
-    it("should return 0 if the product does not exist", () => {
-      // Obtenir la valeur de l'article avec le nom "item4"
-      const value = shop.getProductValue("item4");
-    // Vérifier si la valeur retournée est égale à 0
-    expect(value).toEqual(0);
-  });
-});
-
-// Classe de test pour la méthode sellProduct de la classe Shop
-describe("sellProduct", () => {
-  // Initialiser une instance de Shop avant chaque test
-  let shop: Shop;
-  beforeEach(() => {
-    // Créer un tableau d'objets représentant des articles fictifs
-    const items = [
-        { name: "item1", quality: 10, sellin: 5 },
-        { name: "item2", quality: 20, sellin: 10 },
-        { name: "item3", quality: 30, sellin: 15 },
-    ];
-    // Convertir le tableau d'articles en chaîne de caractères JSON
-    const itemsJson = JSON.stringify(items);
-    // Créer un fichier JSON avec la chaîne de caractères JSON
-    fs.writeFileSync("items.json", itemsJson);
-    // Créer une instance de ItemsRepository avec le fichier JSON
-    const itemsRepository = new ItemsRepository("items.json");
-    // Créer une instance de Shop en utilisant l'instance de ItemsRepository
-    shop = new Shop(itemsRepository);
-  });
-
-  // Tester si la méthode sellProduct met à jour l'inventaire en enlevant l'article vendu
-  it("should update the inventory by removing the sold product", () => {
-    // Vendre l'article avec le nom "item2"
-    shop.sellProduct("item2");
-    // Obtenir l'inventaire mis à jour
-    const items = shop.getInventory();
-    // Vérifier si l'article avec le nom "item2" n'est plus dans l'inventaire
-    expect(items.find((item) => item.name === "item2")).toBeUndefined();
-  });
-
-  // Tester si la méthode sellProduct ne fait rien si l'article à vendre n'existe pas
-  it("should do nothing if the product to sell does not exist", () => {
-    // Vendre l'article avec le nom "item4"
-    shop.sellProduct("item4");
-    // Obtenir l'inventaire mis à jour
-    const items = shop.getInventory();
-    // Vérifier si l'inventaire n'a pas changé
-    expect(items).toEqual([
-        { name: "item1", quality: 10, sellin: 5 },
-        { name: "item2", quality: 20, sellin: 10 },
-        { name: "item3", quality: 30, sellin: 15 },
-    ]);
   });
 });

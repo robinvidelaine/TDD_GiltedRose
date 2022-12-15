@@ -9,8 +9,8 @@ export class LegendaryItem extends Item {
     }
 
     // Constructeur prenant en paramètre optionnels sellin, quality, et name qui sont passés à la classe parente.
-    constructor(sellin: undefined = undefined, quality = 80, name = "") {
-        super(sellin, quality, name);
+    constructor(sellin: undefined = undefined, quality = 80, value: number, name = "") {
+        super(sellin, quality, value, name);
     }
 
     // Redéfinition de la méthode updateQuality() de la classe parente.
